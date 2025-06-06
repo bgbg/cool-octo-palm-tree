@@ -5,42 +5,44 @@ import streamlit_authenticator as stauth
 
 st.set_page_config(page_title="RAG QA + Fragments", layout="centered")
 
-# --- Document count debug block ---
-from sqlalchemy.exc import SQLAlchemyError
 
-try:
-    from dotenv import load_dotenv
-except ImportError:
-    load_dotenv = None
-
-
-def get_document_count():
+# --- Document count debug block (Supabase HTTP API) ---
+def get_document_count_supabase():
     try:
-        # Load env if needed
-        if load_dotenv:
-            load_dotenv()
-        connection_string = os.getenv("SUPABASE_CONNECTION_STRING")
-        if not connection_string:
-            return None, "No SUPABASE_CONNECTION_STRING"
-        from orm import get_db_engine, get_db_session, Document
+        # Try to import supabase-py
+        from supabase import create_client, Client
+    except ImportError:
+        return None, "supabase-py not installed"
+    # Load env if needed
+    try:
+        from dotenv import load_dotenv
 
-        engine = get_db_engine(connection_string)
-        session = get_db_session(engine)
-        count = session.query(Document).count()
-        session.close()
-        return count, None
-    except SQLAlchemyError as e:
-        return None, f"DB error: {e}"
+        load_dotenv()
+    except ImportError:
+        pass
+    # Get credentials from env or secrets
+    supabase_url = os.getenv("SUPABASE_URL") or st.secrets.get("SUPABASE_URL")
+    supabase_key = os.getenv("SUPABASE_KEY") or st.secrets.get("SUPABASE_KEY")
+    if not supabase_url or not supabase_key:
+        return None, "SUPABASE_URL or SUPABASE_KEY not set"
+    try:
+        supabase: Client = create_client(supabase_url, supabase_key)
+        response = (
+            supabase.table("documents").select("id", count="exact").limit(1).execute()
+        )
+        if hasattr(response, "count") and response.count is not None:
+            return response.count, None
+        # supabase-py v2+ returns .model_count
+        if hasattr(response, "model_count") and response.model_count is not None:
+            return response.model_count, None
+        return None, f"No count in response: {response}"
     except Exception as e:
         return None, str(e)
 
 
-doc_count, doc_count_err = get_document_count()
-str_connection_string = os.getenv("SUPABASE_CONNECTION_STRING")
-str_connection_string = str_connection_string[:15] + "..." + str_connection_string[-15:]
-st.info(f"The connection string is {str_connection_string}")
+doc_count, doc_count_err = get_document_count_supabase()
 if doc_count is not None:
-    st.info(f"We have {doc_count} documents in {str_connection_string}")
+    st.info(f"We have {doc_count} documents")
 elif doc_count_err:
     st.warning(f"Document count error: {doc_count_err}")
 # --- End document count debug block ---
