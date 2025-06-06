@@ -556,7 +556,7 @@ def filter_results_with_llm(
     llm_model: str = "gpt-4o-mini",  # gpt-4o-mini is cheaper and faster
     temperature: float = 0,
     task_background: str = "שאלות לגבי תקני הבניה במדינת ישראל לפי מכון התקנים הישראלי עם העדפה לתשובות עובדתיות ומדוייקות",
-    n_jobs: int = 10,
+    n_jobs: int = 3,
 ) -> pd.DataFrame:
     """
     Filter search results using an LLM to keep only chunks that provide direct information relevant to the query.
@@ -654,7 +654,7 @@ def retrieve_documents(
     task_background: str = "שאלות לגבי תקני הבניה במדינת ישראל לפי מכון התקנים הישראלי עם העדפה לתשובות עובדתיות ומדוייקות",
     filter_with_llm: bool = True,
     llm_filter_model: str = "gpt-4o-mini",
-    n_jobs: int = 10,
+    n_jobs: int = 3,
 ) -> pd.DataFrame:
     """
     Retrieves relevant documents using query enhancement techniques and vector search.
