@@ -7,6 +7,7 @@ pandas
 pyyaml
 python-bidi
 pymupdf
+python-dotenv
 sentence-transformers
 torch
 tqdm
