@@ -14,3 +14,4 @@ requests
 streamlit-authenticator
 pyperclip
 psycopg2-binary
+sqlalchemy
