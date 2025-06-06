@@ -5,6 +5,43 @@ import streamlit_authenticator as stauth
 
 st.set_page_config(page_title="RAG QA + Fragments", layout="centered")
 
+# --- Document count debug block ---
+from sqlalchemy.exc import SQLAlchemyError
+
+try:
+    from dotenv import load_dotenv
+except ImportError:
+    load_dotenv = None
+
+
+def get_document_count():
+    try:
+        # Load env if needed
+        if load_dotenv:
+            load_dotenv()
+        connection_string = os.getenv("SUPABASE_CONNECTION_STRING")
+        if not connection_string:
+            return None, "No SUPABASE_CONNECTION_STRING"
+        from orm import get_db_engine, get_db_session, Document
+
+        engine = get_db_engine(connection_string)
+        session = get_db_session(engine)
+        count = session.query(Document).count()
+        session.close()
+        return count, None
+    except SQLAlchemyError as e:
+        return None, f"DB error: {e}"
+    except Exception as e:
+        return None, str(e)
+
+
+doc_count, doc_count_err = get_document_count()
+if doc_count is not None:
+    st.info(f"We have {doc_count} documents")
+elif doc_count_err:
+    st.warning(f"Document count error: {doc_count_err}")
+# --- End document count debug block ---
+
 try:
     secrets_dict = dict(st.secrets)
     if not secrets_dict:
@@ -15,6 +52,14 @@ except Exception:
 
     load_dotenv()
     secrets_dict = {k: v for k, v in os.environ.items() if not k.startswith("_")}
+
+required_secrets = [
+    "AUTH_SALT",
+    "SUPABASE_CONNECTION_STRING",
+]
+for r in required_secrets:
+    assert r in secrets_dict, f"{r} is not set"
+
 
 # Load AUTH_SALT
 AUTH_SALT = secrets_dict.get("AUTH_SALT") or os.getenv("AUTH_SALT")
