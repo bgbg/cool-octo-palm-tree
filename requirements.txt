@@ -11,3 +11,5 @@ sentence-transformers
 torch
 tqdm
 requests
+streamlit-authenticator
+pyperclip
