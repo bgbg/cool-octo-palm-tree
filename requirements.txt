@@ -1,6 +1,7 @@
 cachier
 defopt
 deepeval
+langchain
 notebook
 numpy
 pandas
