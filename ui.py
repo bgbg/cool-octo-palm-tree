@@ -93,31 +93,31 @@ config = {
 }
 
 # Custom login form
-st.write("## Login")
-input_username = st.text_input("Username").strip().lower()
-input_password = st.text_input("Password", type="password")
-login_btn = st.button("Login")
+# st.write("## Login")
+# input_username = st.text_input("Username").strip().lower()
+# input_password = st.text_input("Password", type="password")
+# login_btn = st.button("Login")
 
-if "auth_status" not in st.session_state:
-    st.session_state["auth_status"] = None
-if "auth_user" not in st.session_state:
-    st.session_state["auth_user"] = None
+# if "auth_status" not in st.session_state:
+#     st.session_state["auth_status"] = None
+# if "auth_user" not in st.session_state:
+#     st.session_state["auth_user"] = None
 
-if login_btn:
-    if input_username in usernames:
-        # Use streamlit-authenticator's check_pw
-        hashed_pw = usernames[input_username]["password"]
-        if stauth.Hasher.check_pw(input_password, hashed_pw):
-            st.session_state["auth_status"] = True
-            st.session_state["auth_user"] = input_username
-        else:
-            st.session_state["auth_status"] = False
-            st.session_state["auth_user"] = None
-    else:
-        st.session_state["auth_status"] = False
-        st.session_state["auth_user"] = None
+# if login_btn:
+#     if input_username in usernames:
+#         # Use streamlit-authenticator's check_pw
+#         hashed_pw = usernames[input_username]["password"]
+#         if stauth.Hasher.check_pw(input_password, hashed_pw):
+#             st.session_state["auth_status"] = True
+#             st.session_state["auth_user"] = input_username
+#         else:
+#             st.session_state["auth_status"] = False
+#             st.session_state["auth_user"] = None
+#     else:
+#         st.session_state["auth_status"] = False
+#         st.session_state["auth_user"] = None
 
-if st.session_state["auth_status"]:
+if True:  # st.session_state["auth_status"]:
     st.write(f'Welcome *{st.session_state["auth_user"]}*')
     # --- BEGIN RAG QA UI (from tmp.py) ---
     import pandas as pd
