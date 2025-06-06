@@ -36,11 +36,17 @@ print = hu.hebrew_print
 
 # Set up logging to a single file for all modules
 log_path = os.path.abspath("takanot_rag.log")
+import logging
+import sys
+
 logging.basicConfig(
     level=os.getenv("LOGGING_LEVEL", logging.INFO),
     format="%(asctime)s|%(name)s|%(levelname)s| %(message)s",
     datefmt="%Y%m%d%H%M%S",
-    handlers=[logging.FileHandler(log_path, mode="a", encoding="utf-8")],
+    handlers=[
+        logging.FileHandler(log_path, mode="a", encoding="utf-8"),
+        logging.StreamHandler(sys.stdout),
+    ],
     force=True,
 )
 logger = logging.getLogger("takanot_rag")
