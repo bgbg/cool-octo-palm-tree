@@ -36,11 +36,10 @@ def get_document_count():
 
 
 doc_count, doc_count_err = get_document_count()
+str_connection_string = os.getenv("SUPABASE_CONNECTION_STRING")
+str_connection_string = str_connection_string[:10] + "..." + str_connection_string[-10:]
+st.info(f"The connection string is {str_connection_string}")
 if doc_count is not None:
-    str_connection_string = os.getenv("SUPABASE_CONNECTION_STRING")
-    str_connection_string = (
-        str_connection_string[:10] + "..." + str_connection_string[-10:]
-    )
     st.info(f"We have {doc_count} documents in {str_connection_string}")
 elif doc_count_err:
     st.warning(f"Document count error: {doc_count_err}")
