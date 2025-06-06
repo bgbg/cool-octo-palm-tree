@@ -31,6 +31,8 @@ from langchain.schema import Document as LangchainDocument
 # Remove local definition, import from cost_logging.py
 from cost_logging import log_llm_cost, OPENAI_LLM_PRICING
 
+from supabase import create_client
+
 orininal_print = print
 print = hu.hebrew_print
 
@@ -63,8 +65,9 @@ if not connection_string:
     logging.error("Missing SUPABASE_CONNECTION_STRING environment variable")
     sys.exit(1)
 
-engine = get_db_engine(connection_string)
-session = get_db_session(engine)
+supabase_url = os.getenv("SUPABASE_URL")
+supabase_key = os.getenv("SUPABASE_KEY")
+supabase = create_client(supabase_url, supabase_key)
 logging.debug("Successfully connected to the database")
 
 

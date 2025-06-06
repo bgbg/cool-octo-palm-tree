@@ -15,7 +15,5 @@ tqdm
 requests
 streamlit-authenticator
 pyperclip
-psycopg2-binary
-sqlalchemy
 supabase
-langchain-openai
+supabase-py
